@@ -1,0 +1,17 @@
+Indicator E1: Percentage of children ages 0 to 17 years living in counties with pollutant
+concentrations above the levels of the current air quality standards, 1999–2017
+Indicator E2: Percentage of children ages 0 to 17 years living in counties with 8-hour
+ozone and 24-hour PM2.5 concentrations above the levels of air quality standards, by
+frequency of occurrence, 2017 
+
+All children living in all counties are considered in the indicator; however, many counties do not have air pollution monitors. Monitoring networks are typically designed to focus on areas that are expected to have higher concentrations or that have larger populations. If any of the unmonitored counties have concentrations above the levels of the NAAQS, Indicator E1 will
+understate the percentage of children living in counties with concentrations above standard
+levels. The indicator thus represents the percentage of all children who lived in counties with
+confirmed pollutant concentrations above the levels of the standards each year, where
+confirmation is provided by a valid monitor value in that year. The percentages of children in
+unmonitored counties in 2017 range from about 30% for ozone and PM2.5 to about 50% for
+PM10, carbon monoxide, sulfur dioxide and nitrogen dioxide, and about 90% for lead.x
+
+would be interesting to compare E1 and E2 resutls with census data on socio-economic status, also would be very interesting to see the correlation between socio economic status and counties that are not monitored, particularly for lead
+
+:

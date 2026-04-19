@@ -1,0 +1,120 @@
+
+what is the AQI?
+
+made up of 5 of the 6 criteria pollutants: 
+
+ground level ozone
+partical pollution: includes PM2.5, PM10
+carbon monixide
+sulfur dioxide
+nitrogen dioxide
+
+
+Info about pollutants:
+https://www.epa.gov/system/files/documents/2022-04/ace3-criteria-air-pollutants-report-section.pdf
+
+particle pollution
+PM10 - thoracic course particles 
+definition: less than or equal to 10 µm and greater than 2.5
+µm
+
+PM2.5 - fine particles
+definition: less than or equal to 2.5 µm
+
+Course particles
+cause: mechanical porcesses, uncontrolled burning (wildfires, residential burning, uncontrolled burning), resuspended dust by cars and wind, construction 
+
+Fine particles
+cause: combustion from power plants, gas & diesel engines, wood combusion, industrial processes, atmospheric reactions to gaseous pollutants
+
+Harm: while both are harmful, fine particles are more of an risk
+aggrivated cardiovascular and respiratory disease, changes in sub-clinical indicators of respiratory and cardiac function, allergies
+
+Who: Children, older adults, individuals with preexisting heart and lung disease (including asthma),
+and persons with lower socioeconomic status are considered to be among the groups most at
+risk for effects associated with PM exposures.6 Information is accumulating and currently
+provides suggestive evidence for associations between long-term PM2.5 exposure and
+developmental effects such as low birth weight and infant mortality due to respiratory causes.6 
+
+Sulfur Dioxide
+
+Cause: fossil fuel combusion by electrical utilities and industry
+
+Who: people with asthma, chronic respiritory issues
+
+effect: in people with asthma, and chronic respiritory issues, associated with difficulty breathing, wheezing, chest tightness or shortness of breath
+
+
+
+Nitrogen Dioxide
+
+Nitric Oxide NO 
+oxidized into Nitrogen Dioxide (NO2)
+
+Cause: emitted by vehicles, power plants, other engines, is rapidly oxidized into NO2 in the atmosphere
+
+effects: Exposure can cause respiritory symptoms, especially in asthmatic children, and older adults
+
+
+Lead
+
+cause Since it's ban in gasoline in the mid 1990s, emissions mainly caused by industrial sources, like lead smelting and battery recycling, and piston-engine small aircraft that use leaded aviation gasoline
+
+effects: neurodevelopmental effects of Low IQ and behavioral effects in developing children.
+
+
+
+carbon monoxide
+
+
+cause: gasoline fueled vehicle emissions
+
+effects: lower capacity of the blood to carry oxygen 
+
+who: people with heart disease and angina are already at a reduced capacity to carry oxygen to internal organs, which can cause them to experiecne myocardial ischema (reduced oxygen to the heart)
+
+
+Overall affects:
+
+Fetal development: air pollutants can be transmitted to the developing feotus during pregnancy. Particularly lead and particle pollution have been shown to cross the placenta and accumulate in the fetal tissue during gestation. 
+
+particle pollution: low birth weight, limited studies of prenatal exposure to criteria pollution report exposure to PM & oxides of nitrogen and sulfer may increase risk of developing asthma, and exacerbate respiritory symptoms including reduced growth of lung function during childhood.A report by the Health Effects Institute concluded that living close to busy roads appears to be an independent risk factor for the onset of childhood asthma. “sufficient” to infer a causal association
+
+
+
+--------------------------------------------------
+AQI Index
+
+based on standards established in the Clean Air Act
+
+represents air quality for each individual day
+
+lead not included because of the length of time needed to collect and analyze lead samples
+
+Values Index:
+6 categories 0-50 good, 301+ emergency
+0-50 
+51-100
+101-150
+151-200
+201-300
+301 and higher
+
+How Constructed
+
+Under the Clean Air Act, EPA has established National Ambient Air Quality Standards (NAAQS)
+for 
+carbon monoxide, 
+lead, 
+ground-level ozone, 
+particulate matter, 
+nitrogen dioxide, 
+sulfur dioxide 
+
+There are four basic elements of NAAQS that together serve to define each standard: 
+
+the definition of the pollutant
+the averaging time (e.g., annual average or 24-hour average),
+the level
+the form of the standard (which defines the air quality statistic compared to the level of the standard in determining whether an area attains the standard—for example, the
+24-hour PM2.5 standard uses 98th percentile concentrations, averaged over three years). (defines how the results are contextualized)
