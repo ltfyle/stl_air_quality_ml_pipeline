@@ -12,8 +12,8 @@ import os
     # PM2.5: 88101
 county_code=189
 city_code=510
-AQS_KEY="get key from AQS website"
-AQS_EMAIL="email"
+AQS_KEY="mauvefox81"
+AQS_EMAIL="ltfy4d@umsystem.edu"
 
 
 # Extracting the data, loading it into dataframes
