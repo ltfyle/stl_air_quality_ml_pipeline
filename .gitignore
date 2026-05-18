@@ -2,4 +2,6 @@
 .venv_pl/
 secure.txt
 *.log
+.cache.sqlite
+./scripts/_pycache_
 #/pipelines
