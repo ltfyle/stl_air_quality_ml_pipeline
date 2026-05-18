@@ -1,8 +1,8 @@
 # Pipeline that extracts historical air quality, transforms and stores it as a csv file
-from AQS_etl_tools import CreateDataFrame, TransformCityData
+from AQS_tools import CreateDataFrame, TransformCityData
+from historic_weather import get_weather_df
 import pandas as pd
 import os 
-
 # Setup 
 #------------------------------------------------------------------
 # api variables 
@@ -10,10 +10,12 @@ import os
     # Saint Louis City: 510
     # NO2: 42602, 
     # PM2.5: 88101
+
+
 county_code=189
 city_code=510
-AQS_KEY="mauvefox81"
-AQS_EMAIL="ltfy4d@umsystem.edu"
+AQS_KEY=os.environ["AQS_KEY"]
+AQS_EMAIL=os.environ["AQS_EMAIL"]
 
 
 # Extracting the data, loading it into dataframes
@@ -67,36 +69,41 @@ county_NO2_Data.transform_data()
 df_city_NO2=city_NO2_Data.df_transformed
 df_city_PM25=city_PM25_Data.df_transformed
 df_county_NO2=county_NO2_Data.df_transformed
-df_county_PM25=county_NO2_Data.df_transformed
+df_county_PM25=county_PM25_Data.df_transformed
 
 # Merge, encode variables & Load to csv
 #----------------------------------------------------------------
-# 1. merge the city and county data for each pollutant
+# merge 1: merge the city and county data for each pollutant
 df_NO2=pd.concat([df_city_NO2,df_county_NO2]).sort_index()
 df_PM25=pd.concat([df_city_PM25,df_county_PM25]).sort_index()
+df_NO2['pollutant']='NO2'
+df_PM25['pollutant']='PM25'
 
-# 2. replace string variables with numeric encoding
-mapping = {'1 HOUR': 1, '24 HOUR': 24}
+# Merge 2: aggregate the pollutant data: 1 value per pollutant per day
+df_aq = pd.concat([df_NO2,df_PM25])
+df_aq = df_aq.rename_axis('date')
+df_aq = df_aq.loc[df_aq['sample_duration']=='1 HOUR']
+df_aq = df_aq.drop(columns='sample_duration')
 
-df_NO2['samp_dur_hrs'] = df_NO2['sample_duration'].map(mapping)
-df_NO2.drop('sample_duration', axis=1, inplace=True)
-df_PM25['samp_dur_hrs'] = df_PM25['sample_duration'].map(mapping)
-df_PM25.drop('sample_duration', axis=1, inplace=True)
+df_aq = df_aq.pivot_table(
+    index="date",
+    columns="pollutant",
+    values="sample_measurement",
+    aggfunc="mean"
+).reset_index()
+
+df_aq.columns.name = None
+df_aq=df_aq.set_index('date')
+
+# merge3: merge with weather data
+df_weather = get_weather_df()
+df_aq.index = pd.to_datetime(df_aq.index).tz_localize(None).normalize()
+df_weather.index = pd.to_datetime(df_weather.index).tz_localize(None).normalize()
+
+df_full=df_weather.join(df_aq,how="outer")
 
 # 3. load as csv file
-if os.path.isfile("stl_no2_historic.csv"):
+if os.path.isfile("/output/historic_data.csv"):
     print("File exists")
 else:
-    df_NO2.to_csv("stl_NO2_historic.csv")
-
-if os.path.isfile("stl_pm25_historic.csv"):
-    print("File exists")
-else:
-    df_PM25.to_csv("stl_pm25_historic.csv")
-
-print("Success! check the directory.")
-
-
-
-
-
+    df_full.to_csv("/output/historic_data.csv")

@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+read -p "AQS_KEY:" val1
+read -p "AQS_EMAIL:" val2
+docker run \
+	--name hist_etl_container \
+	-e AQS_KEY=$val1 \
+	-e AQS_EMAIL=$val2 \
+	-v "$(pwd)/data_csvs:/output" \
+	hist_etl
+

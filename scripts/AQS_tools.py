@@ -1,6 +1,4 @@
 import pandas as pd
-pd.set_option('display.max_columns', None)
-import time
 import requests
 # all the methods needed to extract data, drop initial columns, and build dictionaries
 ## data dict class

@@ -1,15 +1,108 @@
-import openmeteo_requests
+from scripts.AQS_tools import CreateDataFrame, TransformCityData
 import pandas as pd
+import openmeteo_requests
 import requests_cache
 from retry_requests import retry
 import os
 
-# Setup the Open-Meteo API client with cache and retry on error
+# setup AQS
+county_code=189
+city_code=510
+AQS_KEY=input("AQS API key:")
+AQS_EMAIL=input("AQS API email:")
+# setup Weather.gov
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
 retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
 openmeteo = openmeteo_requests.Client(session = retry_session)
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# AQS API Extraction 
+# 1. Initializes the paramaters for the api request:
+    # 1.1 city data for NO2, PM25
+city_NO2=CreateDataFrame(510,42602,AQS_KEY,AQS_EMAIL)
+city_PM25=CreateDataFrame(510,88101,AQS_KEY,AQS_EMAIL)
+    # 1.2 county data NO2, PM25
+county_NO2=CreateDataFrame(189,42602,AQS_KEY,AQS_EMAIL)
+county_PM25=CreateDataFrame(189,88101,AQS_KEY,AQS_EMAIL)
 
+# 2. Pulls the data from the api, transforms into a dataframe, 
+    # drops 
+        # 'uncertainty',
+        # 'state_code',
+        # 'county_code','state','county',
+        # 'datum',
+        # 'date_of_last_change',
+        # 'cbsa_code',
+        # 'date_gmt','time_gmt',
+        # 'units_of_measure_code',
+        # 'sample_duration_code',
+        # 'method','method_type',
+        # 'method_code','detection_limit'
 
+city_NO2=city_NO2.get_air_data()
+city_PM25=city_PM25.get_air_data()
+county_NO2=county_NO2.get_air_data()
+county_PM25=county_PM25.get_air_data()
+
+# create transformed dataframes with mean sample measurement, per site, per day 
+# stores in the TransformCityData object 
+
+# 1. Load the raw dataframes into the TransformCityData objects
+
+city_NO2_Data=TransformCityData(city_NO2)
+city_PM25_Data=TransformCityData(city_PM25)
+county_NO2_Data=TransformCityData(county_NO2)
+county_PM25_Data=TransformCityData(county_PM25)
+
+# 2. actually transofroms the data 
+# this isnt the best design but it was my first attempt at something like this
+city_NO2_Data.transform_data()
+city_PM25_Data.transform_data()
+county_PM25_Data.transform_data()
+county_NO2_Data.transform_data()
+
+# 3. the transformed datasets 
+df_city_NO2=city_NO2_Data.df_transformed
+df_city_PM25=city_PM25_Data.df_transformed
+df_county_NO2=county_NO2_Data.df_transformed
+df_county_PM25=county_NO2_Data.df_transformed
+
+# Merge, encode variables & Load to csv
+
+# 1. merge the city and county data for each pollutant
+df_NO2=pd.concat([df_city_NO2,df_county_NO2]).sort_index()
+df_PM25=pd.concat([df_city_PM25,df_county_PM25]).sort_index()
+
+# 2. replace string variables with numeric encoding
+mapping = {'1 HOUR': 1, '24 HOUR': 24}
+
+df_NO2['samp_dur_hrs'] = df_NO2['sample_duration'].map(mapping)
+df_NO2 = df_NO2.drop('sample_duration', axis=1)
+df_PM25['samp_dur_hrs'] = df_PM25['sample_duration'].map(mapping)
+df_PM25 = df_PM25.drop('sample_duration', axis=1)
+
+df_NO2 = df_NO2.rename(columns={'date_local': 'date'})
+df_PM25 = df_PM25.rename(columns={'date_local': 'date'})
+
+df_NO2['pollutant']='NO2'
+df_PM25['pollutant']='PM25'
+
+# merging air quality data together
+df_aq_raw=pd.concat([df_NO2,df_PM25])
+#df_aq_raw1=df_aq_raw.rename(columns={"date_local": "date"})
+
+df_aq_raw1=df_aq_raw.loc[df_aq_raw['samp_dur_hrs']==1]
+df_aq_raw2=df_aq_raw1.drop(columns='samp_dur_hrs')
+
+# transform data to have columns with mean daily numbers for each pollutant
+df_aq = df_aq_raw2.pivot_table(
+    index="date",
+    columns="pollutant",
+    values="sample_measurement",
+    aggfunc="mean"
+).reset_index()
+
+df_aq.columns.name = None
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Weather for the year 2025, for all the zipcodes available for saint louis,
 url = "https://historical-forecast-api.open-meteo.com/v1/forecast"
 params = {
@@ -62,21 +155,33 @@ for response in responses:
 	location_data.append(daily_dataframe)
 
 # gluing together the dataframes for each location
-historical_weather_df = pd.concat(location_data, ignore_index=True)
-historical_weather_df = historical_weather_df.sort_values(["latitude","longitude","date"]).reset_index(drop=True)
+df_hw_raw = pd.concat(location_data, ignore_index=True)
+df_hw_raw1 = df_hw_raw.sort_values(["latitude","longitude","date"]).reset_index(drop=True)
 
 # fix date format from iso to pandas datetime
-historical_weather_df["date"] = (
-    pd.to_datetime(historical_weather_df["date"])
+df_hw_raw1["date"] = (
+    pd.to_datetime(df_hw_raw["date"])
       .dt.tz_localize(None)   # remove timezone
       .dt.date                # remove time (keep only day)
 )
 
 # simple agregation for each variable, by date
-df_historical_weather_transformed=historical_weather_df.groupby(['date'])[['temperature_2m_max','precipitation_sum','precipitation_hours','uv_index_max','wind_speed_10m_max','shortwave_radiation_sum']].mean().reset_index()
+df_weather=df_hw_raw1.groupby(['date'])[['temperature_2m_max','precipitation_sum','precipitation_hours','uv_index_max','wind_speed_10m_max','shortwave_radiation_sum']].mean().reset_index()
 
-if os.path.exists("stl_weather_historic.csv"):
-	print("file already exists")
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 3. save as csv file
+df_weather=df_weather.set_index('date')
+df_aq=df_aq.set_index('date')
+
+df_full = df_weather.join(df_aq, how="outer")
+
+if os.path.exists("historic_data.csv"):
+    print("file already exists")
 else:
-	df_historical_weather_transformed.to_csv("stl_weather_historic.csv", index=False)
+    df_full.to_csv("historic_data.csv")
+
+
+
+
+
 

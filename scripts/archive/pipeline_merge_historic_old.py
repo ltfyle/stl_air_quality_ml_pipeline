@@ -10,12 +10,9 @@ df_weather=pd.read_csv("stl_weather_historic.csv")
 df_NO2 = df_NO2.rename(columns={'date_local': 'date'})
 df_PM25 = df_PM25.rename(columns={'date_local': 'date'})
 
-df_NO2['pollutant']='NO2'
-df_PM25['pollutant']='PM25'
-
 # merging air quality data together
-df_aq=pd.concat([df_NO2,df_PM25])
-df_aq['site_number'].unique()
+df_aq = pd.concat([df_NO2,df_PM25])
+df_aq = df_aq.rename(columns={'date_local':'date'})
 
 # PM25 is only measured once every three days
 # since we have full data for 1 hour data, for both pollutants, 
